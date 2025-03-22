@@ -12,15 +12,14 @@
             font-family: 'Open Sans', sans-serif;
             margin: 0;
             padding: 0;
+            color: #d4af37;
             background-color: #000000;
             line-height: 1.6;
-            background: url('repete.jpg');
-            background-repeat: repeat; /* Répète l'image en mosaïque */
-            background-position: 0px -100px; /* Décale l’image vers le haut de 50px */
         }
 
         header {
-            background-color: transparent;
+            background-color: #000000;
+            border-bottom: 1px solid #d4af37;
             padding: 20px 0;
             text-align: center;
             position: sticky;
@@ -31,14 +30,12 @@
 
         header img {
             height: 60px;
-            display: block;
-            margin: 0 auto; /* Centre le logo horizontalement */
         }
 
         nav {
             display: flex;
             justify-content: center;
-            background-color: transparent;
+            background-color: #000000;
             padding: 10px 0;
         }
 
@@ -93,7 +90,6 @@
             margin: 0 auto;
             background-color: #000000;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 15px; /* Ajoute cette ligne pour arrondir les coins */
         }
 
         .container:hover {
@@ -219,52 +215,15 @@
         .underline-hover:hover::after {
             width: 100%;
         }
-
-        /* Media Queries pour rendre le site responsive */
-        @media (max-width: 768px) {
-            header img {
-                height: 50px;
-            }
-            .hero h1 {
-                font-size: 36px;
-            }
-            .container {
-                padding: 20px 10px;
-            }
-            .video {
-                margin: 20px 0;
-            }
-            .publicite, .testimonials, .contact-form {
-                padding: 20px;
-                margin: 20px 0;
-            }
-            nav a {
-                padding: 10px 15px;
-                font-size: 16px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            header img {
-                height: 40px;
-            }
-            .hero h1 {
-                font-size: 28px;
-            }
-            nav a {
-                padding: 8px 10px;
-                font-size: 14px;
-            }
-        }
     </style>
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="Logo de l'entreprise">
+        <img src="logo.svg" alt="Logo de l'entreprise">
     </header>
     <nav>
         <a href="#accueil" class="underline-hover">Accueil</a>
-        <a href="./service.html" class="underline-hover">Services</a>
+        <a href="#services" class="underline-hover">Services</a>
         <a href="#apropos" class="underline-hover">À propos</a>
         <a href="#contact" class="underline-hover">Contact</a>
         <a href="#login" class="underline-hover">Connexion</a>
