@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maison à louer - Cassis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Styles généraux */
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+            line-height: 1.6;
+            background: url('repete.jpg') repeat -110px -100px;
+        }
+
+        header {
+            background-color: transparent;
+            padding: 20px 0;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(212, 175, 55, 0.1);
+        }
+
+        header img {
+            height: 60px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: transparent;
+            padding: 10px 0;
+        }
+
+        nav a {
+            color: #ffffff;
+            padding: 15px 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            background-color: #ffffff;
+            width: 0;
+            transition: width 0.3s ease;
+            position: absolute;
+            left: 0;
+            bottom: -5px;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Conteneur principal */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.3);
+        }
+
+        .property-title {
+            font-size: 26px;
+            font-weight: bold;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            margin-top: 10px;
+        }
+
+        form input {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #ff6f61;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #e55b4f;
+        }
+
+        #confirmation {
+            display: none;
+            margin-top: 20px;
+            color: green;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Logo de l'entreprise">
+    </header>
+    <!-- Barre de navigation -->
+    <nav>
+        <a href="test.html">Accueil</a>
+        <a href="service.html">Services</a>
+        <a href="#apropos">À propos</a>
+        <a href="#contact">Contact</a>
+        <a href="#login">Connexion</a>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <h3>Formulaire de Réservation</h3>
+        <form id="reservationForm">
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" placeholder="Votre email" required>
+
+            <label for="telephone">Téléphone :</label>
+            <input type="tel" id="telephone" name="telephone" placeholder="Votre numéro de téléphone" required>
+
+            <p>Date d'arrivée : <span id="start-date"></span></p>
+            <p>Date de départ : <span id="end-date"></span></p>
+
+            <button type="submit">Réserver</button>
+        </form>
+        <div id="confirmation">
+            Merci pour votre réservation ! Nous vous contacterons prochainement.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Récupérer les dates depuis localStorage
+            const startDate = localStorage.getItem('startDate');
+            const endDate = localStorage.getItem('endDate');
+
+            // Vérifier si les dates existent dans le localStorage
+            if (startDate) {
+                document.getElementById('start-date').textContent = new Date(startDate).toLocaleDateString();
+            } else {
+                document.getElementById('start-date').textContent = "Non sélectionnée";
+            }
+
+            if (endDate) {
+                document.getElementById('end-date').textContent = new Date(endDate).toLocaleDateString();
+            } else {
+                document.getElementById('end-date').textContent = "Non sélectionnée";
+            }
+        });
+
+        document.getElementById('reservationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const submitBtn = this.querySelector("button[type='submit']");
+            submitBtn.textContent = "Envoi...";
+            submitBtn.disabled = true;
+
+            // Récupérer les dates depuis localStorage
+            const startDate = localStorage.getItem("startDate");
+            const endDate = localStorage.getItem("endDate");
+
+            // Ajouter les dates au formulaire avant l'envoi
+            const formData = new FormData(this);
+            formData.append("start_date", startDate || "Non sélectionnée");
+            formData.append("end_date", endDate || "Non sélectionnée");
+
+            // Vérifier les données envoyées (pour débogage)
+            console.log("Données envoyées :", Object.fromEntries(formData.entries()));
+
+            // Envoyer le formulaire via EmailJS
+            emailjs.sendForm("service_7xtpexj", "template_3jr5npg", this)
+                .then(function (response) {
+                    console.log("Email envoyé avec succès !", response);
+                    alert("Votre réservation a été envoyée avec succès !");
+                    submitBtn.textContent = "Réserver";
+                    submitBtn.disabled = false;
+
+                    // Réinitialiser le formulaire et effacer les dates du localStorage
+                    document.getElementById("reservationForm").reset();
+                    localStorage.removeItem("startDate");
+                    localStorage.removeItem("endDate");
+                }, function (error) {
+                    console.log("Échec de l'envoi de l'email", error);
+                    alert("Une erreur s'est produite lors de l'envoi. Veuillez réessayer.");
+                    submitBtn.textContent = "Réserver";
+                    submitBtn.disabled = false;
+                });
+        });
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialiser EmailJS avec votre clé publique
+            emailjs.init("wKyeQt_chZMTOZY_c"); // Remplacez par votre clé publique EmailJS
+        });
+    </script>
+</body>
+</html>
