@@ -1,0 +1,65 @@
+<!-- Page de connexion Admin -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Admin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #222;
+            color: white;
+            text-align: center;
+            margin: 50px;
+        }
+        .login-container {
+            background: #333;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin: auto;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #d4af37;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #b3952c;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Connexion Admin</h2>
+        <input type="text" id="username" placeholder="Nom d'utilisateur">
+        <input type="password" id="password" placeholder="Mot de passe">
+        <button onclick="login()">Se connecter</button>
+        <p id="error-msg" style="color: red;"></p>
+    </div>
+
+    <script>
+        function login() {
+            const user = document.getElementById("username").value;
+            const pass = document.getElementById("password").value;
+            const errorMsg = document.getElementById("error-msg");
+            
+            if (user === "admin" && pass === "1234") {
+                localStorage.setItem("isAdmin", "true");
+                window.location.href = "admin.html";
+            } else {
+                errorMsg.textContent = "Identifiants incorrects";
+            }
+        }
+    </script>
+</body>
+</html>
