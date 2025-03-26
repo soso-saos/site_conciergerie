@@ -190,7 +190,7 @@
     </header>
     <!-- Barre de navigation -->
     <nav>
-        <a href="index.html">Accueil</a>
+        <a href="test.html">Accueil</a>
         <a href="service.html">Services</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
@@ -218,6 +218,10 @@
             <p>Date d'arrivée : <span id="start-date"></span></p>
             <p>Date de départ : <span id="end-date"></span></p>
             <p id="price-display"></p>
+        </div>
+
+        <div>
+            <button><a href="reservation.html"> Réserver </a></button>
         </div>
     
         <script>
@@ -287,6 +291,8 @@
                         if (startDay) {
                             startDay.classList.add('start-date');
                         }
+                        // Enregistrer la date d'arrivée dans localStorage
+                        localStorage.setItem('startDate', startDate);
                     }
                     
                     if (selectedDates.length > 1) {
@@ -295,6 +301,9 @@
                         if (endDay) {
                             endDay.classList.add('end-date');
                         }
+
+                        // Enregistrer la date de départ dans localStorage
+                        localStorage.setItem('endDate', endDate);
 
                         const rangeStart = new Date(selectedDates[0]);
                         const rangeEnd = new Date(selectedDates[1]);
