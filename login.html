@@ -1,10 +1,9 @@
-<!-- Page de connexion Admin -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion Admin</title>
+    <title>Connexion Administrateur</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,24 +12,25 @@
             text-align: center;
             margin: 50px;
         }
-        .login-container {
+        .container {
             background: #333;
             padding: 20px;
             border-radius: 10px;
             width: 300px;
             margin: auto;
         }
-        input, button {
-            width: 100%;
+        input {
+            width: 90%;
             padding: 10px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
         }
         button {
+            padding: 10px;
             background-color: #d4af37;
-            color: black;
-            font-weight: bold;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
         }
         button:hover {
@@ -39,25 +39,22 @@
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Connexion Admin</h2>
-        <input type="text" id="username" placeholder="Nom d'utilisateur">
-        <input type="password" id="password" placeholder="Mot de passe">
+    <div class="container">
+        <h2>Connexion Administrateur</h2>
+        <input type="password" id="adminPassword" placeholder="Mot de passe administrateur">
         <button onclick="login()">Se connecter</button>
-        <p id="error-msg" style="color: red;"></p>
     </div>
 
     <script>
         function login() {
-            const user = document.getElementById("username").value;
-            const pass = document.getElementById("password").value;
-            const errorMsg = document.getElementById("error-msg");
-            
-            if (user === "admin" && pass === "1234") {
-                localStorage.setItem("isAdmin", "true");
-                window.location.href = "admin.html";
+            const password = document.getElementById("adminPassword").value;
+
+            // Vérifiez le mot de passe administrateur
+            if (password === "admin123") { // Remplacez "admin123" par votre mot de passe
+                localStorage.setItem("isAdmin", "true"); // Stocke l'état de connexion admin
+                window.location.href = "admin.html"; // Redirige vers la page admin
             } else {
-                errorMsg.textContent = "Identifiants incorrects";
+                alert("Mot de passe incorrect !");
             }
         }
     </script>

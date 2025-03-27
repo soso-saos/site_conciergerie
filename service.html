@@ -3,185 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page 2</title>
+    <title>Services - Sélection de biens</title>
     <style>
-        /* Polices de caractères */
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap');
-
+        /* Vos styles existants ici */
         body {
-            font-family: 'Open Sans', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #000000;
-            line-height: 1.6;
-            background: url('repete.jpg') repeat -110px -100px;
+            background-color: #f4f4f4;
         }
-
         header {
-            background-color: transparent;
-            padding: 20px 0;
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
             text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(212, 175, 55, 0.1);
         }
-
-        header img {
-            height: 60px;
-            display: block;
-            margin: 0 auto;
-        }
-
         nav {
             display: flex;
             justify-content: center;
-            background-color: transparent;
+            background-color: #444;
             padding: 10px 0;
         }
-
         nav a {
-            color: #ffffff;
-            padding: 15px 20px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 18px;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        nav a::after {
-            content: '';
-            display: block;
-            height: 2px;
-            background-color: #ffffff;
-            width: 0;
-            transition: width 0.3s ease;
-            position: absolute;
-            left: 0;
-            bottom: -5px;
-        }
-
-        nav a:hover::after {
-            width: 100%;
-        }
-
-        .hero {
-            background-image: url('villa.jpg');
-            filter: blur(5px);
-            background-size: cover;
-            background-position: center;
-            height: 80vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
             color: white;
-            position: relative;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
         }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1;
+        nav a:hover {
+            text-decoration: underline;
         }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 48px;
-            z-index: 2;
-            color: #ffffff;
-        }
-
-        .container {
-            padding: 40px 20px;
+        .hero {
             text-align: center;
+            padding: 50px 20px;
+            background-color: #ddd;
+        }
+        .container {
             max-width: 1200px;
-            margin: 0 auto;
-            background-color: #000000;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 15px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
-        .container:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.7);
-        }
-
         .row {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
-            padding: 20px;
+            justify-content: center;
         }
-
         .col {
-            width: 300px;
-            border: 1px solid #e5e5e5;
-            border-radius: 10px;
+            flex: 1 1 calc(33.333% - 20px);
+            max-width: calc(33.333% - 20px);
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-
-        .col.selected {
-            border: 2px solid #d4af37;
-        }
-
         .col img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: auto;
         }
-
         .col h3 {
-            color: #ffffff;
-            font-family: 'Playfair Display', serif;
+            margin: 10px;
+            font-size: 18px;
+            color: #333;
         }
-
-
-
-        /* Media Queries pour rendre le site responsive */
-        @media (max-width: 768px) {
-            header img {
-                height: 50px;
-            }
-            .hero h1 {
-                font-size: 36px;
-            }
-            .container {
-                padding: 20px 10px;
-            }
-            .video {
-                margin: 20px 0;
-            }
-            .publicite, .testimonials, .contact-form {
-                padding: 20px;
-                margin: 20px 0;
-            }
-            nav a {
-                padding: 10px 15px;
-                font-size: 16px;
-            }
+        .col p {
+            margin: 10px;
+            font-size: 14px;
+            color: #666;
         }
-        
-        @media (max-width: 480px) {
-            header img {
-                height: 40px;
-            }
-            .hero h1 {
-                font-size: 28px;
-            }
-            nav a {
-                padding: 8px 10px;
-                font-size: 14px;
-            }
+        .col a {
+            display: block;
+            margin: 10px;
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+        }
+        .col a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #333;
+            color: white;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -190,14 +99,15 @@
         <img src="logo.png" alt="Logo de l'entreprise">
     </header>
     <nav>
-        <a href="index.html" class="underline-hover">Accueil</a>
+        <a href="test.html" class="underline-hover">Accueil</a>
         <a href="service.html" class="underline-hover">Services</a>
         <a href="#apropos" class="underline-hover">À propos</a>
         <a href="#contact" class="underline-hover">Contact</a>
-        <a href="#login" class="underline-hover">Connexion</a>
+        <a href="login.html" class="underline-hover">Connexion</a>
     </nav>
     <section class="hero">
         <h1>Bienvenue sur nos biens</h1>
+        <p>Découvrez notre sélection exclusive de villas et maisons.</p>
     </section>
     <div class="container">
         <h2>Sélection de biens</h2>
@@ -237,5 +147,16 @@
     <footer>
         <p>Chef d'entreprise: John Doe</p>
     </footer>
+
+    <script>
+        // Extraire dynamiquement les informations des produits
+        const products = Array.from(document.querySelectorAll('.col.option')).map(col => ({
+            id: col.getAttribute('data-saveur'),
+            name: col.querySelector('h3').textContent.trim()
+        }));
+
+        // Sauvegarder les produits dans le localStorage
+        localStorage.setItem('products', JSON.stringify(products));
+    </script>
 </body>
 </html>

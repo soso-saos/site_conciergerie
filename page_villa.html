@@ -116,6 +116,12 @@
             cursor: pointer;
         }
 
+        .blocked {
+            background-color: red !important;
+            color: white;
+            pointer-events: none; /* Empêche le clic sur les dates bloquées */
+        }
+
         .start-date {
             background-color: #4CAF50; /* Vert clair */
             border: 2px solid #ffffff;
@@ -190,11 +196,11 @@
     </header>
     <!-- Barre de navigation -->
     <nav>
-        <a href="index.html">Accueil</a>
+        <a href="test.html">Accueil</a>
         <a href="service.html">Services</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
-        <a href="#login">Connexion</a>
+        <a href="login.html">Connexion</a>
     </nav>
 
     <!-- Contenu principal -->
@@ -238,6 +244,9 @@
                 let selectedDates = [];
                 const pricePerNight = 300;
 
+                // Récupérer les dates bloquées depuis localStorage
+                const blockedDates = JSON.parse(localStorage.getItem("blockedDates")) || [];
+
                 function renderCalendar(date) {
                     calendar.innerHTML = '';
                     const year = date.getFullYear();
@@ -259,9 +268,16 @@
                         const dayCell = document.createElement('div');
                         dayCell.classList.add('day');
                         dayCell.textContent = day;
-                        dayCell.dataset.date = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-                        
-                        dayCell.addEventListener('click', () => selectDate(dayCell));
+                        const formattedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                        dayCell.dataset.date = formattedDate;
+
+                        // Vérifier si la date est bloquée
+                        if (blockedDates.includes(formattedDate)) {
+                            dayCell.classList.add('blocked');
+                        } else {
+                            dayCell.addEventListener('click', () => selectDate(dayCell));
+                        }
+
                         calendar.appendChild(dayCell);
                     }
                 }
