@@ -99,7 +99,7 @@
         <img src="logo.png" alt="Logo de l'entreprise">
     </header>
     <nav>
-        <a href="test.html" class="underline-hover">Accueil</a>
+        <a href="index.html" class="underline-hover">Accueil</a>
         <a href="service.html" class="underline-hover">Services</a>
         <a href="#apropos" class="underline-hover">À propos</a>
         <a href="#contact" class="underline-hover">Contact</a>
@@ -118,7 +118,7 @@
                 <div style="padding: 15px;">
                     <h3>Villa Saint-Tropez</h3>
                     <p>5 chambres | 250 m²</p>
-                    <a href="page_villa.html" style="text-decoration: none; color: #333; font-weight: bold;">Découvrir ce bien</a>
+                    <a href="page_villa_1.html" style="text-decoration: none; color: #333; font-weight: bold;">Découvrir ce bien</a>
                 </div>
             </div>
 
@@ -128,7 +128,7 @@
                 <div style="padding: 15px;">
                     <h3>Maison Vallauris</h3>
                     <p>296 m²</p>
-                    <a href="https://www.barnes-international.com/fr/vente/france/vallauris-06220/85465950" style="text-decoration: none; color: #333; font-weight: bold;">Découvrir ce bien</a>
+                    <a href="page_villa_2.html" style="text-decoration: none; color: #333; font-weight: bold;">Découvrir ce bien</a>
                 </div>
             </div>
 
@@ -143,20 +143,23 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Sélectionnez tous les liens "Découvrir ce bien"
+            const options = document.querySelectorAll('.option a');
+    
+            options.forEach(option => {
+                option.addEventListener('click', (event) => {
+                    const villaName = option.closest('.option').getAttribute('data-saveur'); // Récupère le nom de la villa
+                    localStorage.setItem('villaName', villaName); // Stocke le nom de la villa dans le localStorage
+                    console.log("Villa sélectionnée :", villaName); // Debug : affiche la villa sélectionnée
+                });
+            });
+        });
+    </script>
 
     <footer>
         <p>Chef d'entreprise: John Doe</p>
     </footer>
-
-    <script>
-        // Extraire dynamiquement les informations des produits
-        const products = Array.from(document.querySelectorAll('.col.option')).map(col => ({
-            id: col.getAttribute('data-saveur'),
-            name: col.querySelector('h3').textContent.trim()
-        }));
-
-        // Sauvegarder les produits dans le localStorage
-        localStorage.setItem('products', JSON.stringify(products));
-    </script>
 </body>
 </html>

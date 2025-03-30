@@ -32,41 +32,26 @@
         .day {
             width: 40px;
             height: 40px;
-            background-color: #000000;
+            background-color: #444;
             border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            color: white;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .day:hover {
+            background-color: #666;
         }
         .blocked {
             background-color: red !important;
             color: white;
         }
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 10px 0;
-        }
-        .nav-buttons button {
-            background-color: #d4af37;
+        .unblocked {
+            background-color: #444 !important;
             color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background 0.3s ease, transform 0.2s ease;
-        }
-        .nav-buttons button:hover {
-            background-color: #b3952c;
-            transform: scale(1.1);
-        }
-        .nav-buttons button:active {
-            background-color: #8c6e2f;
-            transform: scale(0.95);
         }
         button {
             margin-top: 20px;
@@ -94,138 +79,164 @@
         <label for="villa-select">Choisir un produit :</label>
         <select id="villa-select"></select>
         <div class="calendar-container">
-            <div class="nav-buttons">
-                <button id="prev-month">&#9665; Précédent</button>
-                <h2 id="month-name">Mars 2025</h2>
-                <button id="next-month">Suivant &#9655;</button>
-            </div>
             <div class="calendar" id="calendar"></div>
         </div>
+        <button onclick="resetBlockedDates()">Réinitialiser les dates</button>
         <button onclick="logout()">Déconnexion</button>
     </div>
 
-    <script>
-        // Vérification si l'utilisateur est admin
-        if (localStorage.getItem("isAdmin") !== "true") {
-            alert("Accès refusé. Vous devez être administrateur pour accéder à cette page.");
-            window.location.href = "login.html"; // Redirige vers la page de connexion
-        }
+    <script type="module">
+        // Importation Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
-        const calendar = document.getElementById("calendar");
-        const monthName = document.getElementById("month-name");
-        const prevMonthBtn = document.getElementById("prev-month");
-        const nextMonthBtn = document.getElementById("next-month");
-        const villaSelect = document.getElementById("villa-select");
+        const firebaseConfig = {
+            apiKey: "AIzaSyCS4ix7FePyQaRYlRXVxi5ghS7bI25kJVI",
+            authDomain: "site-concierge.firebaseapp.com",
+            projectId: "site-concierge",
+            storageBucket: "site-concierge.firebasestorage.app",
+            messagingSenderId: "863521292746",
+            appId: "1:863521292746:web:9ec193e10e42f4f5680f33",
+            measurementId: "G-6F7ZQLQHF9"
+        };
+
+        // Initialisation Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let blockedDates = {}; 
         let currentDate = new Date();
 
-        // Charger les produits depuis le localStorage
-        const products = JSON.parse(localStorage.getItem("products")) || [];
+        document.addEventListener("DOMContentLoaded", async () => {
+            await ensureProductsExist(); 
+            await loadProducts(); 
+            await renderCalendar(new Date()); // 🔥 Forcer l'affichage au chargement
+        });
 
-        // Charger les produits dans le menu déroulant
-        function loadProducts() {
+        async function ensureProductsExist() {
+            let products = JSON.parse(localStorage.getItem("products"));
+            if (!products || products.length === 0) {
+                products = [
+                    { id: "villa1", name: "Villa 1" },
+                    { id: "villa2", name: "Villa 2" }
+                ];
+                localStorage.setItem("products", JSON.stringify(products));
+                console.log("Produits ajoutés à localStorage :", products);
+            }
+        }
+
+        async function loadProducts() {
+            const villaSelect = document.getElementById("villa-select");
+            villaSelect.innerHTML = ""; 
+
+            const products = JSON.parse(localStorage.getItem("products")) || [];
+            console.log("Produits chargés :", products);
+
             products.forEach(product => {
                 const option = document.createElement("option");
                 option.value = product.id;
                 option.textContent = product.name;
                 villaSelect.appendChild(option);
             });
-        }
 
-        // Charger les dates bloquées depuis le localStorage
-        function loadBlockedDates() {
-            return JSON.parse(localStorage.getItem("blockedDates")) || {};
-        }
-
-        // Sauvegarder les dates bloquées dans le localStorage
-        function saveBlockedDates(blockedDates) {
-            localStorage.setItem("blockedDates", JSON.stringify(blockedDates));
-        }
-
-        // Bloquer / débloquer une date
-        function toggleBlock(date) {
-            let blockedDates = loadBlockedDates();
-            let selectedProduct = villaSelect.value; // Récupérer la villa sélectionnée
-
-            if (!blockedDates[selectedProduct]) {
-                blockedDates[selectedProduct] = [];
+            if (products.length > 0) {
+                villaSelect.value = products[0].id;
+                await renderCalendar(currentDate);
             }
+        }
 
-            let index = blockedDates[selectedProduct].indexOf(date);
+        async function loadBlockedDates() {
+            const snapshot = await getDocs(collection(db, "blockedDates"));
+            blockedDates = {}; 
+            snapshot.forEach(doc => {
+                blockedDates[doc.id] = doc.data().dates || [];
+            });
+            console.log("blockedDates chargé :", blockedDates);
+        }
+
+        async function saveBlockedDates() {
+            const selectedProduct = document.getElementById("villa-select").value;
+            const dates = blockedDates[selectedProduct] || [];
+            await setDoc(doc(db, "blockedDates", selectedProduct), { dates });
+        }
+
+        async function toggleBlock(date) {
+            const selectedProduct = document.getElementById("villa-select").value;
+            if (!blockedDates[selectedProduct]) blockedDates[selectedProduct] = [];
+
+            const index = blockedDates[selectedProduct].indexOf(date);
+            const dayCell = document.querySelector(`[data-date="${date}"]`);
 
             if (index > -1) {
-                // Débloquer la date
                 blockedDates[selectedProduct].splice(index, 1);
+                dayCell.classList.remove('blocked');
+                dayCell.classList.add('unblocked');
             } else {
-                // Bloquer la date
                 blockedDates[selectedProduct].push(date);
+                dayCell.classList.remove('unblocked');
+                dayCell.classList.add('blocked');
             }
 
-            // Sauvegarder et mettre à jour l'affichage
-            saveBlockedDates(blockedDates);
-            renderCalendar(currentDate);
+            await saveBlockedDates();
         }
 
-        // Mettre à jour l'affichage du calendrier
-        function renderCalendar(date) {
-            calendar.innerHTML = "";
-            let year = date.getFullYear();
-            let month = date.getMonth();
+        async function resetBlockedDates() {
+            const selectedProduct = document.getElementById("villa-select").value;
+            blockedDates[selectedProduct] = [];
+            await saveBlockedDates();
+            await renderCalendar(currentDate);
+        }
 
-            let firstDay = new Date(year, month, 1).getDay();
-            let daysInMonth = new Date(year, month + 1, 0).getDate();
+        async function renderCalendar(date) {
+            console.log("🔄 Rendu du calendrier...");
 
-            let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-            monthName.textContent = `${monthNames[month]} ${year}`;
+            const villaSelect = document.getElementById("villa-select"); // ✅ Correction ici
+            const calendar = document.getElementById("calendar");
 
-            let blockedDates = loadBlockedDates();
-            let selectedProduct = villaSelect.value;
-            let productBlockedDates = blockedDates[selectedProduct] || [];
-
-            for (let i = 0; i < firstDay; i++) {
-                let emptyCell = document.createElement("div");
-                emptyCell.classList.add("day");
-                calendar.appendChild(emptyCell);
+            if (!villaSelect) {
+                console.error("❌ Erreur : Élément #villa-select introuvable !");
+                return;
             }
+
+            if (!calendar) {
+                console.error("❌ Erreur : Élément #calendar introuvable !");
+                return;
+            }
+
+            await loadBlockedDates(); // Charger les dates bloquées
+
+            calendar.innerHTML = ''; // Vider le calendrier
+
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
 
             for (let day = 1; day <= daysInMonth; day++) {
-                let dayCell = document.createElement("div");
-                dayCell.classList.add("day");
+                const dayCell = document.createElement('div');
+                dayCell.classList.add('day');
                 dayCell.textContent = day;
 
-                let formattedDate = `${year}-${(month + 1).toString().padStart(2, "0")}-${day.toString().padStart(2, "0")}`;
+                const formattedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
                 dayCell.dataset.date = formattedDate;
 
-                if (productBlockedDates.includes(formattedDate)) {
-                    dayCell.classList.add("blocked");
+                if (blockedDates[villaSelect.value]?.includes(formattedDate)) {
+                    dayCell.classList.add('blocked');
+                } else {
+                    dayCell.classList.add('unblocked');
                 }
 
-                dayCell.addEventListener("click", () => toggleBlock(formattedDate));
+                dayCell.addEventListener('click', () => toggleBlock(formattedDate));
                 calendar.appendChild(dayCell);
             }
+
+            console.log("✅ Calendrier généré avec succès !");
         }
 
-        // Fonction pour déconnecter l'utilisateur
+
         function logout() {
-            localStorage.removeItem("isAdmin"); // Supprime l'état de connexion admin
-            window.location.href = "login.html"; // Redirige vers la page de connexion
+            localStorage.removeItem("isAdmin");
+            window.location.href = "login.html";
         }
-
-        prevMonthBtn.addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() - 1);
-            renderCalendar(currentDate);
-        });
-
-        nextMonthBtn.addEventListener('click', () => {
-            currentDate.setMonth(currentDate.getMonth() + 1);
-            renderCalendar(currentDate);
-        });
-
-        villaSelect.addEventListener('change', () => {
-            renderCalendar(currentDate); // Recharger le calendrier pour le produit sélectionné
-        });
-
-        loadProducts(); // Charger les produits dans le menu déroulant
-        renderCalendar(currentDate);
     </script>
 </body>
 </html>

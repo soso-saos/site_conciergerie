@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maison à louer - Cassis</title>
+    <title>Formulaire de Réservation</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* Styles généraux */
         body {
             font-family: 'Open Sans', sans-serif;
             margin: 0;
@@ -16,24 +15,9 @@
             background: url('repete.jpg') repeat -110px -100px;
         }
 
-        header {
-            background-color: transparent;
-            padding: 20px 0;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 4px rgba(212, 175, 55, 0.1);
-        }
-
-        header img {
-            height: 60px;
-            display: block;
-            margin: 0 auto;
-        }
-
         nav {
             display: flex;
+            align-items: center;
             justify-content: center;
             background-color: transparent;
             padding: 10px 0;
@@ -47,6 +31,12 @@
             font-size: 18px;
             transition: color 0.3s ease;
             position: relative;
+        }
+
+        nav a img {
+            height: 40px;
+            vertical-align: middle;
+            margin-right: 10px;
         }
 
         nav a::after {
@@ -113,59 +103,67 @@
             text-align: center;
         }
     </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialiser EmailJS avec votre clé publique
+            emailjs.init("wKyeQt_chZMTOZY_c"); // Remplacez par votre clé publique EmailJS
+        });
+    </script>
 </head>
 <body>
-    <header>
-        <img src="logo.png" alt="Logo de l'entreprise">
-    </header>
     <nav>
-        <a href="test.html">Accueil</a>
+        <a href="index.html">
+            <img src="logo.png" alt="Logo de l'entreprise">
+        </a>
+        <a href="index.html">Accueil</a>
         <a href="service.html">Services</a>
         <a href="#apropos">À propos</a>
         <a href="#contact">Contact</a>
-        <a href="#login">Connexion</a>
+        <a href="login.html">Connexion</a>
     </nav>
 
     <div class="container">
         <h3>Formulaire de Réservation</h3>
         <form id="reservationForm">
+            <!-- Champs cachés pour les données de réservation -->
             <input type="hidden" id="hidden-nom-villa" name="villa_name">
-
-            <label for="nom">Nom :</label>
-            <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
-
-            <label for="email">Email :</label>
-            <input type="email" id="email" name="email" placeholder="Votre email" required>
-
-            <label for="telephone">Téléphone :</label>
-            <input type="tel" id="telephone" name="telephone" placeholder="Votre numéro de téléphone" required>
-
             <input type="hidden" id="hidden-start-date" name="start_date">
             <input type="hidden" id="hidden-end-date" name="end_date">
-
+        
+            <label for="nom">Nom :</label>
+            <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+        
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" placeholder="Votre email" required>
+        
+            <label for="telephone">Téléphone :</label>
+            <input type="tel" id="telephone" name="telephone" placeholder="Votre numéro de téléphone" required>
+        
             <button type="submit">Réserver</button>
         </form>
-        <div id="confirmation">
-            Merci pour votre réservation ! Nous vous contacterons prochainement.
-        </div>
+        <div id="confirmation">Merci pour votre réservation ! Nous vous contacterons prochainement.</div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const villaName = "Cassis"; // Nom de la villa
-            const startDate = localStorage.getItem('startDate');
-            const endDate = localStorage.getItem('endDate');
+            const villaName = localStorage.getItem("villaName");
+            const startDate = localStorage.getItem("startDate");
+            const endDate = localStorage.getItem("endDate");
 
-            // Ajouter le nom de la villa dans le champ caché
+            if (!villaName || !startDate || !endDate) {
+                alert("Les informations de réservation sont manquantes. Veuillez réessayer.");
+                return;
+            }
+
+            console.log("Nom de la villa :", villaName);
+            console.log("Date d'arrivée :", startDate);
+            console.log("Date de départ :", endDate);
+
+            // Ajouter les valeurs dans les champs cachés
             document.getElementById('hidden-nom-villa').value = villaName;
-
-            // Ajouter les dates dans les champs cachés
-            if (startDate) {
-                document.getElementById('hidden-start-date').value = startDate;
-            }
-            if (endDate) {
-                document.getElementById('hidden-end-date').value = endDate;
-            }
+            document.getElementById('hidden-start-date').value = startDate;
+            document.getElementById('hidden-end-date').value = endDate;
         });
 
         document.getElementById('reservationForm').addEventListener('submit', function (event) {
@@ -181,7 +179,7 @@
             console.log("End Date (hidden):", document.getElementById('hidden-end-date').value);
 
             // Envoyer le formulaire via EmailJS
-            emailjs.sendForm("service_7xtpexj", "template_3jr5npg", this)
+            emailjs.sendForm("service_7xtpexj", "template_3jr5npg", this) // Remplacez par vos identifiants EmailJS
                 .then(function (response) {
                     console.log("Email envoyé avec succès !", response);
                     alert("Votre réservation a été envoyée avec succès !");
@@ -198,12 +196,6 @@
                     submitBtn.textContent = "Réserver";
                     submitBtn.disabled = false;
                 });
-        });
-    </script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@2.4.1/dist/email.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            emailjs.init("wKyeQt_chZMTOZY_c");
         });
     </script>
 </body>
